@@ -1,0 +1,109 @@
+#include <iostream>
+#include <windows.h>
+using namespace std;
+
+int main() {
+    setlocale(0, "");
+    string db_login = "user";
+    string db_password = "user407";
+    double balance = 5000.0;
+
+    int attempts = 3;
+    bool logged_in = false;
+
+    cout << "Добро пожаловать в BRR BRR BANK" << endl;
+
+    while (attempts > 0 && !logged_in) {
+        string login, password;
+
+        cout << "Введите логин: ";
+        cin >> login;
+        cout << "Введите пароль: ";
+        cin >> password;
+
+        if (login == db_login && password == db_password) {
+            logged_in = true;
+            cout << "Вы успешно авторизовались!" << endl;
+            Sleep(1000);
+            system("cls");
+        }
+        else {
+            attempts--;
+            cout << "Неверный логин или пароль! Осталось попыток: " << attempts << endl;
+            Sleep(2000);
+            system("cls");
+        }
+    }
+
+    if (!logged_in) {
+        cout << "Забанен зубастый)" << endl;
+        return 0;
+    }
+
+    while (true) {
+        cout << "Учётная запись: " << db_login << endl;
+        cout << "1. Посмотреть баланс" << endl;
+        cout << "2. Пополнить счёт" << endl;
+        cout << "3. Снять сумму" << endl;
+        cout << "4. Выход" << endl;
+
+        int menu;
+        cout << "Введите пункт меню: ";
+        cin >> menu;
+
+        system("cls");
+
+        if (menu == 1) {
+            cout << "Текущий баланс: " << balance << " руб." << endl;
+        }
+        else if (menu == 2) {
+            double amount;
+            cout << "Введите сумму для пополнения: ";
+            cin >> amount;
+
+            if (amount > 0) {
+                cout << "Идет процесс пополнения счета..." << endl;
+                Sleep(2000);
+                balance += amount;
+                cout << "Счёт пополнен на " << amount << " руб." << endl;
+            }
+            else {
+                cout << "Ошибка: Сумма должна быть положительной!" << endl;
+            }
+        }
+        else if (menu == 3) {
+            double amount;
+            cout << "Введите сумму для снятия: ";
+            cin >> amount;
+
+            if (amount > 0 && amount <= balance) {
+                cout << "Идет процесс снятия сред1ств..." << endl;
+                Sleep(2000);
+                balance -= amount;
+                cout << "Снято " << amount << " руб." << endl;
+            }
+            else if (amount > balance) {
+                cout << "Недостаточно средств!" << endl;
+                cout << "Доступно: " << balance << " руб." << endl;
+            }
+            else {
+                cout << "Ошибка: Сумма должна быть положительной!" << endl;
+            }
+        }
+        else if (menu == 4) {
+            cout << "Nigga get out!" << endl;
+            break;
+        }
+        else {
+            cout << "Неверный пункт меню!" << endl;
+        }
+
+        if (menu != 4) {
+            Sleep(2000);
+            system("cls");
+        }
+    }
+    int _;
+    cin >> _ ;
+    return 0;
+}
