@@ -1,0 +1,512 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <windows.h> // Для работы с цветами в Windows
+#include <conio.h>   // Для _getch()
+
+using namespace std;
+
+// Структура для вопроса
+struct Question {
+    string text;
+    string options[4];
+    char correctAnswer;
+};
+
+// Структура для настроек
+struct Settings {
+    string playerName = "Игрок";
+    int questionCount = 8;
+    int menuColor = 7;     // 7 - белый (стандартный)
+    int questionColor = 10; // 10 - зеленый
+    int answerColor = 11;   // 11 - голубой
+    int numberColor = 14;   // 14 - желтый
+};
+
+// Функция для установки цвета текста в консоли
+void SetColor(int color) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+}
+
+// Функция для отображения меню
+void ShowMenu(Settings& settings) {
+    system("cls");
+
+    SetColor(settings.menuColor);
+    cout << "==========================================" << endl;
+    cout << "           ВИКТОРИНА ПО ПРОГРАММИРОВАНИЮ" << endl;
+    cout << "==========================================" << endl;
+    cout << endl;
+
+    SetColor(settings.numberColor);
+    cout << "[1] ";
+    SetColor(settings.menuColor);
+    cout << "Начать игру" << endl;
+
+    SetColor(settings.numberColor);
+    cout << "[2] ";
+    SetColor(settings.menuColor);
+    cout << "Настройки" << endl;
+
+    SetColor(settings.numberColor);
+    cout << "[3] ";
+    SetColor(settings.menuColor);
+    cout << "Правила" << endl;
+
+    SetColor(settings.numberColor);
+    cout << "[4] ";
+    SetColor(settings.menuColor);
+    cout << "Выйти" << endl;
+    cout << endl;
+
+    cout << "Игрок: ";
+    SetColor(settings.answerColor);
+    cout << settings.playerName;
+    SetColor(settings.menuColor);
+    cout << " | Вопросов: " << settings.questionCount << endl;
+    cout << "==========================================" << endl;
+
+    SetColor(settings.numberColor);
+    cout << "[ + ] Выберите пункт меню: ";
+    SetColor(settings.menuColor);
+}
+
+// Функция для отображения правил
+void ShowRules(Settings& settings) {
+    system("cls");
+
+    SetColor(settings.menuColor);
+    cout << "==========================================" << endl;
+    cout << "                  ПРАВИЛА ИГРЫ" << endl;
+    cout << "==========================================" << endl;
+    cout << endl;
+
+    SetColor(settings.questionColor);
+    cout << "Основные правила игры:" << endl;
+    SetColor(settings.menuColor);
+    cout << "1. Игрок получает +10 очков за правильный ответ" << endl;
+    cout << "2. Игрок теряет 1 жизнь при неправильном ответе" << endl;
+    cout << "3. В начале игры у игрока 3 жизни" << endl;
+    cout << "4. Игра продолжается до тех пор, пока:" << endl;
+    cout << "   - у игрока не закончатся жизни" << endl;
+    cout << "   - игрок не ответит на все вопросы" << endl;
+    cout << "5. Для ответа введите букву варианта (A, B, C, D)" << endl;
+    cout << endl;
+
+    SetColor(settings.answerColor);
+    cout << "Пример ввода: A" << endl;
+    cout << endl;
+
+    SetColor(settings.menuColor);
+    cout << "==========================================" << endl;
+    SetColor(settings.numberColor);
+    cout << "[0] Вернуться в главное меню" << endl;
+
+    SetColor(settings.menuColor);
+    cout << "==========================================" << endl;
+    SetColor(settings.numberColor);
+    cout << "[ + ] Нажмите 0 для возврата: ";
+
+    char choice;
+    while (true) {
+        choice = _getch();
+        if (choice == '0') {
+            break;
+        }
+    }
+}
+
+// Функция для настроек
+void ShowSettings(Settings& settings) {
+    while (true) {
+        system("cls");
+
+        SetColor(settings.menuColor);
+        cout << "==========================================" << endl;
+        cout << "                  НАСТРОЙКИ" << endl;
+        cout << "==========================================" << endl;
+        cout << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[1] ";
+        SetColor(settings.menuColor);
+        cout << "Редактировать имя игрока" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[2] ";
+        SetColor(settings.menuColor);
+        cout << "Количество вопросов (сейчас: " << settings.questionCount << ")" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[3] ";
+        SetColor(settings.menuColor);
+        cout << "Цвет меню" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[4] ";
+        SetColor(settings.menuColor);
+        cout << "Цвет вопросов" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[5] ";
+        SetColor(settings.menuColor);
+        cout << "Цвет ответов" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[6] ";
+        SetColor(settings.menuColor);
+        cout << "Цвет цифр" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[0] ";
+        SetColor(settings.menuColor);
+        cout << "Вернуться в главное меню" << endl;
+
+        cout << endl;
+        cout << "==========================================" << endl;
+
+        SetColor(settings.numberColor);
+        cout << "[ + ] Выберите пункт: ";
+        SetColor(settings.menuColor);
+
+        char choice;
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == '0') {
+            break;
+        }
+        else if (choice == '1') {
+            cout << "Введите новое имя игрока: ";
+            SetColor(settings.answerColor);
+            getline(cin, settings.playerName);
+            SetColor(settings.menuColor);
+            cout << "Имя изменено на: " << settings.playerName << endl;
+            system("pause");
+        }
+        else if (choice == '2') {
+            cout << "Выберите количество вопросов:" << endl;
+            cout << "[1] 8 вопросов" << endl;
+            cout << "[2] 10 вопросов" << endl;
+            cout << "[3] 12 вопросов" << endl;
+            cout << "Ваш выбор: ";
+
+            int qChoice;
+            cin >> qChoice;
+
+            if (qChoice == 1) settings.questionCount = 8;
+            else if (qChoice == 2) settings.questionCount = 10;
+            else if (qChoice == 3) settings.questionCount = 12;
+
+            cout << "Количество вопросов изменено на: " << settings.questionCount << endl;
+            system("pause");
+        }
+        else if (choice == '3') {
+            cout << "Выберите цвет меню (введите номер 1-15): ";
+            int color;
+            cin >> color;
+            if (color >= 1 && color <= 15) {
+                settings.menuColor = color;
+                cout << "Цвет меню изменен" << endl;
+            }
+            system("pause");
+        }
+        else if (choice == '4') {
+            cout << "Выберите цвет вопросов (введите номер 1-15): ";
+            int color;
+            cin >> color;
+            if (color >= 1 && color <= 15) {
+                settings.questionColor = color;
+                cout << "Цвет вопросов изменен" << endl;
+            }
+            system("pause");
+        }
+        else if (choice == '5') {
+            cout << "Выберите цвет ответов (введите номер 1-15): ";
+            int color;
+            cin >> color;
+            if (color >= 1 && color <= 15) {
+                settings.answerColor = color;
+                cout << "Цвет ответов изменен" << endl;
+            }
+            system("pause");
+        }
+        else if (choice == '6') {
+            cout << "Выберите цвет цифр (введите номер 1-15): ";
+            int color;
+            cin >> color;
+            if (color >= 1 && color <= 15) {
+                settings.numberColor = color;
+                cout << "Цвет цифр изменен" << endl;
+            }
+            system("pause");
+        }
+    }
+}
+// Функция для создания списка вопросов
+vector<Question> CreateQuestions() {
+    vector<Question> questions;
+
+    // Вопрос 1
+    questions.push_back({
+        "Системный язык программирования?",
+        {"Python", "C#", "Ruby", "C++"},
+        'D'
+        });
+
+    // Вопрос 2
+    questions.push_back({
+        "Какой язык используется для веб-разработки на стороне клиента?",
+        {"PHP", "JavaScript", "Java", "C++"},
+        'B'
+        });
+
+    // Вопрос 3
+    questions.push_back({
+        "Что такое ООП?",
+        {"Объектно-Ориентированное Программирование", "Операционная Организация Процессов", "Основные Операционные Процедуры", "Объектная Организация Протокола"},
+        'A'
+        });
+
+    // Вопрос 4
+    questions.push_back({
+        "Какой тип данных используется для хранения текста в C++?",
+        {"int", "float", "string", "char"},
+        'C'
+        });
+
+    // Вопрос 5
+    questions.push_back({
+        "Что означает HTML?",
+        {"Hyper Text Markup Language", "High Tech Modern Language", "Hyper Transfer Markup Language", "Home Tool Markup Language"},
+        'A'
+        });
+
+    // Вопрос 6
+    questions.push_back({
+        "Какой компанией был создан язык Java?",
+        {"Microsoft", "Apple", "Sun Microsystems", "Google"},
+        'C'
+        });
+
+    // Вопрос 7
+    questions.push_back({
+        "Что такое Git?",
+        {"Язык программирования", "Система контроля версий", "Текстовый редактор", "Операционная система"},
+        'B'
+        });
+
+    // Вопрос 8
+    questions.push_back({
+        "Какой оператор используется для сравнения на равенство в C++?",
+        {"=", "==", "!=", "==="},
+        'B'
+        });
+
+    // Вопрос 9
+    questions.push_back({
+        "Что такое API?",
+        {"Автоматизированный Программный Интерфейс", "Интерфейс Прикладного Программирования", "Автономный Протокол Интернета", "Асинхронный Программный Интерфейс"},
+        'B'
+        });
+
+    // Вопрос 10
+    questions.push_back({
+        "Какой язык является интерпретируемым?",
+        {"C++", "Java", "Python", "C#"},
+        'C'
+        });
+
+    // Вопрос 11
+    questions.push_back({
+        "Что такое SQL?",
+        {"Simple Question Language", "Structured Query Language", "System Query Logic", "Standard Question Logic"},
+        'B'
+        });
+
+    // Вопрос 12
+    questions.push_back({
+        "Какой тег используется для создания ссылки в HTML?",
+        {"<link>", "<a>", "<href>", "<url>"},
+        'B'
+        });
+
+    return questions;
+}
+
+// Функция для запуска игры
+void StartGame(Settings& settings) {
+    vector<Question> allQuestions = CreateQuestions();
+
+    // Перемешиваем вопросы
+    srand(time(0));
+    for (int i = 0; i < allQuestions.size(); i++) {
+        int j = rand() % allQuestions.size();
+        swap(allQuestions[i], allQuestions[j]);
+    }
+
+    // Выбираем нужное количество вопросов
+    vector<Question> gameQuestions;
+    for (int i = 0; i < min(settings.questionCount, (int)allQuestions.size()); i++) {
+        gameQuestions.push_back(allQuestions[i]);
+    }
+
+    int lives = 3;
+    int score = 0;
+    int questionIndex = 0;
+
+    while (lives > 0 && questionIndex < gameQuestions.size()) {
+        system("cls");
+
+        // Отображение информации об игроке
+        SetColor(settings.menuColor);
+        cout << "[ + ] Игрок: ";
+        SetColor(settings.answerColor);
+        cout << settings.playerName;
+        SetColor(settings.menuColor);
+        cout << " | жизни: ";
+        SetColor(12); // Красный цвет для жизней
+        cout << lives;
+        SetColor(settings.menuColor);
+        cout << " | очки: ";
+        SetColor(10); // Зеленый цвет для очков
+        cout << score << endl;
+        SetColor(settings.menuColor);
+        cout << "==========================================" << endl;
+        // Отображение вопроса
+        Question currentQuestion = gameQuestions[questionIndex];
+
+        SetColor(settings.numberColor);
+        cout << "[ " << questionIndex + 1 << " ] ";
+        SetColor(settings.questionColor);
+        cout << "Вопрос: " << currentQuestion.text << endl;
+        SetColor(settings.menuColor);
+        cout << endl;
+
+        // Отображение вариантов ответа
+        SetColor(settings.answerColor);
+        cout << "[ A ] " << currentQuestion.options[0] << "\t";
+        SetColor(settings.answerColor);
+        cout << "[ B ] " << currentQuestion.options[1] << endl;
+        SetColor(settings.answerColor);
+        cout << "[ C ] " << currentQuestion.options[2] << "\t";
+        SetColor(settings.answerColor);
+        cout << "[ D ] " << currentQuestion.options[3] << endl;
+        SetColor(settings.menuColor);
+        cout << endl;
+        cout << "==========================================" << endl;
+
+        // Ввод ответа
+        SetColor(settings.numberColor);
+        cout << "[ + ] Выбрать ответ: ";
+        SetColor(settings.menuColor);
+
+        char answer;
+        cin >> answer;
+        answer = toupper(answer); // Преобразуем в верхний регистр
+
+        // Проверка ответа
+        if (answer == currentQuestion.correctAnswer) {
+            score += 10;
+            SetColor(10); // Зеленый
+            cout << "[ ✓ ] Правильно! +10 очков" << endl;
+        }
+        else {
+            lives--;
+            SetColor(12); // Красный
+            cout << "[ ✗ ] Неверно! Правильный ответ: " << currentQuestion.correctAnswer;
+            cout << " - " << currentQuestion.options[currentQuestion.correctAnswer - 'A'] << endl;
+            cout << "[ - ] Осталось жизней: " << lives << endl;
+        }
+
+        SetColor(settings.menuColor);
+        questionIndex++;
+
+        if (lives > 0 && questionIndex < gameQuestions.size()) {
+            cout << endl;
+            cout << "Следующий вопрос через 2 секунды..." << endl;
+            Sleep(2000);
+        }
+    }
+
+    // Итоги игры
+    system("cls");
+    SetColor(settings.menuColor);
+    cout << "==========================================" << endl;
+
+    if (lives > 0) {
+        SetColor(10); // Зеленый
+        cout << "           ПОБЕДА!" << endl;
+        SetColor(settings.menuColor);
+        cout << "Вы ответили на все вопросы!" << endl;
+    }
+    else {
+        SetColor(12); // Красный
+        cout << "           ИГРА ОКОНЧЕНА" << endl;
+        SetColor(settings.menuColor);
+        cout << "У вас закончились жизни" << endl;
+    }
+
+    cout << endl;
+    cout << "Итоговые результаты:" << endl;
+    cout << "Игрок: " << settings.playerName << endl;
+    cout << "Очки: " << score << endl;
+    cout << "Осталось жизней: " << lives << endl;
+    cout << "Правильных ответов: " << score / 10 << " из " << gameQuestions.size() << endl;
+    cout << "==========================================" << endl;
+
+    system("pause");
+}
+
+int main() {
+    // Настройка кодировки для Windows
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    Settings settings;
+
+    // Приветствие
+    system("cls");
+    SetColor(10); // Зеленый
+    cout << "==========================================" << endl;
+    cout << "    ДОБРО ПОЖАЛОВАТЬ В ВИКТОРИНУ!" << endl;
+    cout << "       ПО ПРОГРАММИРОВАНИЮ И IT" << endl;
+    cout << "==========================================" << endl;
+    SetColor(7); // Белый
+    cout << endl;
+    cout << "Нажмите любую клавишу для продолжения...";
+    _getch();
+
+    // Главный цикл программы
+    while (true) {
+        ShowMenu(settings);
+
+        char choice;
+        cin >> choice;
+
+        if (choice == '1') {
+            StartGame(settings);
+        }
+        else if (choice == '2') {
+            ShowSettings(settings);
+        }
+        else if (choice == '3') {
+            ShowRules(settings);
+        }
+        else if (choice == '4') {
+            system("cls");
+            SetColor(14); // Желтый
+            cout << "==========================================" << endl;
+            cout << "        СПАСИБО ЗА ИГРУ!" << endl;
+            cout << "        ДО СВИДАНИЯ!" << endl;
+            cout << "==========================================" << endl;
+            SetColor(7);
+            break;
+        }
+    }
+
+    return 0;
+}
